@@ -1,0 +1,6 @@
+name: toolkit
+version: 1.0-SNAPSHOT
+main: com.minigames.toolkit.ToolKit
+author: Rafaelrain
+depend:
+  - depends
