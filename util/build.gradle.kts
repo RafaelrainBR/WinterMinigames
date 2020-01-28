@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 group = "com.minigames"
@@ -10,8 +11,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib-jdk8"))
-    api(project(":toolkit"))
+    implementation(kotlin("stdlib-jdk8"))
+    implementation(project(":toolkit"))
 }
 
 tasks {

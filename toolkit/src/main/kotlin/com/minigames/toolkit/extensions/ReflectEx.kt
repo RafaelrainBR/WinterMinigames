@@ -8,4 +8,4 @@ fun Any.getField(name: String): Field = javaClass.getDeclaredField(name)
 
 val Field.accessible get() = apply { isAccessible = true }
 
-fun <T : Any> Field.cast() = this as T
+fun <T : Any> Any.cast() = this as T

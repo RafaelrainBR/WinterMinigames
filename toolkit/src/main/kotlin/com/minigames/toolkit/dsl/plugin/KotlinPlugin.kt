@@ -7,12 +7,14 @@ import com.minigames.toolkit.extensions.accessible
 import com.minigames.toolkit.extensions.cast
 import com.minigames.toolkit.extensions.color
 import com.minigames.toolkit.extensions.getField
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandMap
+import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 
 abstract class KotlinPlugin : JavaPlugin() {
 
-    private val commandMap: CommandMap = server.getField("commandMap").accessible.cast()
+    private val commandMap: CommandMap = server.getField("commandMap").accessible.get(Bukkit.getServer()).cast()
     private val moduleList = arrayListOf<Module>()
 
     override fun onEnable() {
@@ -26,7 +28,7 @@ abstract class KotlinPlugin : JavaPlugin() {
         initializeAllModules(ModulePriority.LOWER)
     }
 
-    fun registerCommands(vararg commands: Command) {
+    fun registerCommands(vararg commands: Command) =
         commandMap.run {
             registerAll(name,
                 commands.map { it.bukkitCMD }.apply {
@@ -36,20 +38,28 @@ abstract class KotlinPlugin : JavaPlugin() {
                 }
             )
         }
-    }
 
-    fun registerModules(vararg modules: Module) {
+    fun registerListener(vararg listeners: Listener) =
+        listeners.forEach {
+            Bukkit.getPluginManager().registerEvents(it, this)
+        }
+
+    fun registerModules(vararg modules: Module) =
         moduleList.addAll(modules)
-    }
 
-    private fun initializeAllModules(priority: ModulePriority) {
+    private fun initializeAllModules(priority: ModulePriority) =
         log("§fInicializando Módulos de prioridade: §e${priority.name}")
-        moduleList.filter { it.priority == priority }
-            .forEach {
-                log("§fInicializando Módulo: §e§l${it.name}")
-                it.provide()
+            .run {
+                moduleList.filter { it.priority == priority }
+                    .forEach { module ->
+                        log("§fInicializando Módulo: §e§l${module.name}")
+                        module.provide()
+                        module.commands.forEach { command ->
+                            registerCommands(command)
+                        }
+                    }
             }
-    }
+
 
     fun log(string: String) = logger.info(string.color)
 

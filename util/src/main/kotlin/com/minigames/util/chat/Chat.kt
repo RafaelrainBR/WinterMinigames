@@ -1,18 +1,26 @@
 package com.minigames.util.chat
 
 import com.minigames.toolkit.dsl.module.Module
+import com.minigames.toolkit.dsl.module.listener
+import com.minigames.toolkit.dsl.module.plugin
+import org.bukkit.event.EventHandler
 import org.bukkit.event.player.AsyncPlayerChatEvent
-import org.bukkit.plugin.Plugin
 
-class Chat(plugin: Plugin) : Module("Chat", plugin) {
+class Chat(plugin: plugin) : Module("Chat", plugin) {
 
     override fun provide() {
-
-        listener<AsyncPlayerChatEvent> {
-            format = "§7[Membro]§r${player.name}§7 » $message"
-        }
-
+        listener(Listener)
     }
 
+    object Listener : listener {
+        @EventHandler
+        fun onChat(e: AsyncPlayerChatEvent) {
+            e.format = "${e.player.name} §7» ${e.message}"
+        }
+    }
+
+    val command = command("tell") {
+
+    }
 
 }
