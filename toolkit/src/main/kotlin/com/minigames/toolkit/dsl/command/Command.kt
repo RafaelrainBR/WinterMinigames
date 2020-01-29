@@ -2,11 +2,10 @@ package com.minigames.toolkit.dsl.command
 
 import com.minigames.toolkit.extensions.color
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 
 typealias BukkitCommand = org.bukkit.command.Command
 typealias CommandScope = CommandInfo.() -> Boolean
-
+typealias Sender = CommandSender
 
 fun command(name: String, commandBlock: BukkitCommand.() -> Unit) =
     Command(name, commandBlock)
@@ -23,7 +22,7 @@ class Command(
     }
 
     val bukkitCMD = object : BukkitCommand(name) {
-        override fun execute(sender: CommandSender, commandLabel: String, args: Array<String>): Boolean {
+        override fun execute(sender: Sender, commandLabel: String, args: Array<String>): Boolean {
             return scope(CommandInfo(sender, args))
         }
     }.apply(commandBlock)
@@ -31,18 +30,19 @@ class Command(
 }
 
 data class CommandInfo(
-    val sender: CommandSender,
+    val sender: Sender,
     val args: Array<String>
-)
+) {
+    fun reply(message: String) = sender.reply(message)
+}
 
 /**
- * AAA
  * Isso daqui é pra quando você quer mandar a mensagem
  * e retornar no comando. Coisa simples que eu uso bastante
  *
  * Ah, e você também pode usar '&' para cores, pois já alterna.
  */
-fun Player.reply(message: String): Boolean {
+fun Sender.reply(message: String): Boolean {
     sendMessage(message.color)
     return true
 }

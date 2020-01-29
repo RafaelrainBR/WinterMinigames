@@ -16,6 +16,10 @@ subprojects {
             name = "sonatype"
             url = uri("https://oss.sonatype.org/content/repositories/snapshots")
         }
+        maven {
+            name = "okkero"
+            url = uri("http://nexus.okkero.com/repository/maven-releases/")
+        }
     }
 }
 

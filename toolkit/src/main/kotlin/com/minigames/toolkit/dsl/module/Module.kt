@@ -3,13 +3,14 @@ package com.minigames.toolkit.dsl.module
 import com.minigames.toolkit.dsl.command.BukkitCommand
 import com.minigames.toolkit.dsl.command.Command
 import com.minigames.toolkit.dsl.plugin.KotlinPlugin
+import com.minigames.toolkit.extensions.registerListener
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 
 typealias plugin = KotlinPlugin
 typealias listener = Listener
 
-interface IModule {
+internal interface IModule {
 
     fun provide()
 
@@ -20,7 +21,7 @@ interface IModule {
 
 abstract class Module(
     val name: String,
-    private val plugin: plugin,
+    val plugin: plugin,
     val priority: ModulePriority = ModulePriority.NORMAL
 ) : IModule {
 
